@@ -1,40 +1,74 @@
+
+
+class Player{
+  
 PVector pos;
+PVector posgrid;
 boolean safe = false;
 int movedelay;
 boolean collide = false;
 PImage image;
-
-class Player{
+int playerHealth = 3;
 
   // Initialize
 
-  Player() {
-    pos = new PVector(60, 60);
+  Player(){
+    
+  pos = new PVector(1,1);
+    
 
-  }
-  
+}   
   void draw(){
-    fill(255);
-    ellipse(pos.x, pos.y, 40, 40);
+    
+    
   
+    posgrid = grid_to_screen((int)pos.x, (int)pos.y);
+    fill(0);
+   
+      
+    
+    if(face == "south" || face == "naught") triangle(posgrid.x, posgrid.y + 20, posgrid.x - 20, posgrid.y - 20, posgrid.x + 20, posgrid.y - 20 );
+    if(face == "north") triangle(posgrid.x, posgrid.y - 20, posgrid.x - 20, posgrid.y + 20, posgrid.x + 20, posgrid.y + 20 );
+    if(face == "west")  triangle(posgrid.x - 20, posgrid.y, posgrid.x + 20, posgrid.y + 20, posgrid.x + 20, posgrid.y - 20);
+    if(face == "east")  triangle(posgrid.x + 20, posgrid.y, posgrid.x - 20, posgrid.y + 20, posgrid.x - 20, posgrid.y - 20);
+    
+    
+  
+   
+    
 
  
   // ******** M O V E M E N T ********
 
     if (keyPressed){
       if (!safe){
-        if (key == 'w' &&  pos.y > 0 + 40 ){
-          pos.y -= 40;  
+        
+        
+        if (key == 'w' &&  posgrid.y > 0 + 1){
+          if (!collideEnemy("north")){
+          pos.y -= 1;  
+          face = "north";
+          }
         }
-        if (key == 'd' && pos.x < width - 40){
-          pos.x += 40;
+        if (key == 'd' && posgrid.x < width - 1){
+          if(!collideEnemy("east")){
+          pos.x += 1;
+          face = "east";
+          }
         }
-        if (key == 'a' &&  pos.x > 0 + 40 ){
-          pos.x -= 40;
+        if (key == 'a' &&  posgrid.x > 0 + 1 ){
+          if (!collideEnemy("west")){
+          pos.x -= 1;
+          face = "west";
+          }
         }
-        if (key == 's' &&  pos.y < height - 40){
-          pos.y += 40;
-        } 
+        if (key == 's' &&  posgrid.y < height - 1){
+          if (!collideEnemy("south")){
+          pos.y += 1;
+          face = "south";
+          }
+        }
+         
         movedelay = millis();
         movecount++;
         safe = true;
@@ -45,6 +79,16 @@ class Player{
         safe = false;
       }
     }
+ 
+  
+   // ******** Dying ********
+    for(Agent a : agents){
+          if(pos == a.agentPosGrid){
+          pos.x = 16;
+          pos.y = 8;
+          playerHealth --;
+          
+    }
   }
-    
+  }
 }
